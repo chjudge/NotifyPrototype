@@ -1,6 +1,7 @@
 import sys, os
 from flask import Flask, redirect, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect
 
 from forms import RegisterForm
 
@@ -13,7 +14,7 @@ sys.path.append(scriptdir)
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SECRET_KEY'] = 'bf228mslOG748F7lmfusbgru'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/flask_app'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/flask_app'
 
 db = SQLAlchemy(app)
 
@@ -45,6 +46,14 @@ class User(db.Model):
         self.voter = voter
         self.interest = interest
 
+
+    def __repr__(self):
+        return '<User %r>' % self.email
+    
+# check if users table exists
+if(not inspect(db.engine).has_table('users')):
+    db.create_all()
+
 @app.get('/')
 def hello_world():  # put application's code here
     return redirect(url_for('get_register'))
@@ -70,7 +79,7 @@ def post_register():
 
 
 
-        user = User(r_form.fname.data, r_form.lname.data, r_form.email.data, r_form.phone.data, r_form.state.data, r_form.county.data, r_form.zipcode.data, r_form.precinct.data, r_form.party.data, r_form.voter.data, r_form.interest.data)
+        user = User(r_form.fname.data, r_form.lname.data, r_form.email.data, r_form.phone.data.strip().replace(' ', ''), r_form.state.data, r_form.county.data, r_form.zip.data, r_form.precinct.data, r_form.party.data, 1 if r_form.voter.data == 'Yes' else 0, r_form.interest.data)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('get_register'))
