@@ -1,5 +1,5 @@
-import sys, os
-from flask import Flask, redirect, render_template, url_for
+import sys, os, re
+from flask import Flask, redirect, render_template, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import inspect
 
@@ -71,9 +71,13 @@ def post_register():
         # check if user email or phone already exists
         user = User.query.filter_by(email=r_form.email.data).first()
         if user:
+            print('user exists')
+            flash('This email address is already registered.')
             return redirect(url_for('get_register'))
         user = User.query.filter_by(phone=r_form.phone.data).first()
         if user:
+            print('user exists')
+            flash('This phone number is already registered.')
             return redirect(url_for('get_register'))
 
 
@@ -84,7 +88,11 @@ def post_register():
         db.session.commit()
         return redirect(url_for('get_register'))
     else:
-        return render_template('register.html', form=r_form)
+        exclude = r'[\'\[\]]'
+        for field, error in r_form.errors.items():
+            print(f"{field}: {str(error)}")
+            flash(f"{re.sub(exclude, '', str(error))}")
+        return redirect(url_for('get_register'))
 
 if __name__ == '__main__':
     app.run()
