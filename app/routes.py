@@ -6,14 +6,17 @@ from app.models import User
 from app.email import send_test_email, send_broadcast_email
 from app import db
 
+
 @app.get('/')
 def index():  # put application's code here
     return redirect(url_for('get_register'))
+
 
 @app.get('/register/')
 def get_register():
     r_form = RegisterForm()
     return render_template('register.html', form=r_form)
+
 
 @app.post('/register/')
 def post_register():
@@ -32,10 +35,8 @@ def post_register():
             flash('This phone number is already registered.')
             return redirect(url_for('get_register'))
 
-
-
-
-        user = User(r_form.fname.data, r_form.lname.data, r_form.email.data, r_form.phone.data.strip().replace(' ', ''), r_form.state.data, r_form.county.data, r_form.zip.data, r_form.precinct.data, r_form.party.data, 1 if r_form.voter.data == 'Yes' else 0, r_form.interest.data)
+        user = User(r_form.fname.data, r_form.lname.data, r_form.email.data, r_form.phone.data.strip().replace(' ', ''), r_form.state.data,
+                    r_form.county.data, r_form.zip.data, r_form.precinct.data, r_form.party.data, 1 if r_form.voter.data == 'Yes' else 0, r_form.interest.data)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('get_register'))
@@ -46,10 +47,12 @@ def post_register():
             flash(f"{re.sub(exclude, '', str(error))}")
         return redirect(url_for('get_register'))
 
+
 @app.get('/admin/')
 def get_admin():
     users = User.query.all()
     return render_template('admin.html', users=users)
+
 
 @app.post('/admin/')
 def post_admin():
@@ -65,20 +68,40 @@ def post_admin():
         return redirect(url_for('get_admin'))
     return redirect(url_for('get_admin'))
 
+
 @app.get('/message/')
 def get_message():
     form = MessageForm()
     return render_template('message.html', form=form)
 
 # send email to all users in the state, county, and precinct
+
+
 @app.post('/message/')
 def post_message():
     form = MessageForm()
     if form.validate():
-        users = User.query.filter_by(state=form.state.data, county=form.county.data, precinct=form.precinct.data).all()
-        for user in users:
-            send_test_email(user)
-        flash('Email sent to all users in ' + form.state.data + ', ' + form.county.data + ', ' + form.precinct.data)
+        state = form.state.data
+        county = form.county.data
+        precinct = form.precinct.data
+        if(state == 'All'):
+            users = User.query.all()
+        elif(county == 'All'):
+            users = User.query.filter_by(state=form.state.data).all()
+        elif(precinct == 'All'):
+            users = User.query.filter_by(
+                state=form.state.data, county=form.county.data).all()
+        else:
+            users = User.query.filter_by(
+                state=form.state.data, county=form.county.data, precinct=form.precinct.data).all()
+
+        print(users)
+
+        emails = list(map(lambda u: u.email, users))
+        send_broadcast_email(
+            emails=emails, subject=form.subject.data, body=form.message.data)
+        flash('Email sent to all users in ' + form.state.data +
+              ', ' + form.county.data + ', ' + form.precinct.data)
         return redirect(url_for('get_message'))
     else:
         exclude = r'[\'\[\]]'

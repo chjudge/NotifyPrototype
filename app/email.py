@@ -1,15 +1,19 @@
+from distutils.command.config import config
 from app import app, mail
 from flask_mail import Message
 
-def send_email(subject, sender, recipients, text_body, html_body):
-    msg = Message(subject, sender=sender, recipients=recipients)
-    msg.body = text_body
-    msg.html = html_body
+
+def send_test_email(user):
+    msg = Message(subject='Test', recipients=[user.email])
+    msg.body = f'Test{user.first_name}'
+    # msg.html = f'Test{user.last_name}'
     mail.send(msg)
 
 
-def send_test_email(user):
-    send_email('Test',app.config['ADMINS'][0], recipients=[user.email], text_body=f'Test{user.first_name}', html_body=f'Test{user.last_name}')
-
-def send_broadcast_email(subject, sender, recipients, text_body, html_body):
-    send_email(subject, sender, recipients, text_body, html_body)
+def send_broadcast_email(emails, subject, body):
+    msg = Message(subject=subject, recipients=[
+                  app.config['MAIL_DEFAULT_SENDER']], bcc=emails)
+    print(f'sending email to {msg.bcc[0]}')
+    msg.body = body
+    # msg.html = f'Test{user.last_name}'
+    mail.send(msg)

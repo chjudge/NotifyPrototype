@@ -3,7 +3,7 @@ from wtforms.fields import (SubmitField, EmailField, TelField, StringField,
                             SelectField, TextAreaField)
 from wtforms.validators import InputRequired, Email, EqualTo, Length
 
-STATES = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+STATES = ['All', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
           'HI', 'ID', 'IL', 'IN', 'IO', 'KS', 'KY', 'LA', 'ME', 'MD',
           'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
           'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
@@ -38,8 +38,9 @@ class RegisterForm(FlaskForm):
 class MessageForm(FlaskForm):
     state = SelectField('State:', choices=STATES, validators=[InputRequired()])
     county = SelectField('County:', choices=[
-                         'County1', 'County2', 'County3', 'County4'], validators=[InputRequired()])
+                         'All', 'County1', 'County2', 'County3', 'County4'], validators=[InputRequired()])
     precinct = SelectField('Precinct:', choices=[
-                           'Precinct1', 'Precinct2', 'Precinct3', 'Precinct4'], validators=[InputRequired()])
+                           'All', 'Precinct1', 'Precinct2', 'Precinct3', 'Precinct4'], validators=[InputRequired()])
+    subject = StringField('Subject:', validators=[InputRequired()])
     message = TextAreaField("Message: ", validators=[InputRequired()])
     submit = SubmitField("Send")
