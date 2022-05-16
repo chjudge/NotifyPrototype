@@ -3,3 +3,4 @@ venv
 env
 prototype.wsgi
 .vscode/*
+app/__pycache__
