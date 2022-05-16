@@ -1,7 +1,6 @@
-from typing import Text
 from flask_wtf import FlaskForm
-from wtforms.fields import (PasswordField, SubmitField, EmailField, TelField, StringField,
-    SelectField, TelField, TextAreaField, IntegerField)
+from wtforms.fields import (SubmitField, EmailField, TelField, StringField,
+    SelectField, TelField)
 from wtforms.validators import InputRequired, Email, EqualTo, Length
 
 STATES = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 

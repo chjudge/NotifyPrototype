@@ -4,12 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from sqlalchemy import inspect
 
+app = Flask(__name__)
+
 # Make sure this directory is in your Python path for imports
 scriptdir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(scriptdir)
-
-
-app = Flask(__name__)
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SECRET_KEY'] = 'bf228mslOG748F7lmfusbgru'

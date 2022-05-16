@@ -53,8 +53,14 @@ def get_admin():
 
 @app.post('/admin/')
 def post_admin():
-    if request.forms.get('send_email') is not None:
-        user_id = request.forms.get('send_email')
+    if request.form.get('email_user') is not None:
+        user_id = request.form.get('email_user')
+        print(user_id)
         user = User.query.filter_by(id=user_id).first()
-        send_test_email(user)
+        if user:
+            send_test_email(user)
+            flash('Email sent to ' + user.email)
+        else:
+            flash('User not found')
         return redirect(url_for('get_admin'))
+    return redirect(url_for('get_admin'))
