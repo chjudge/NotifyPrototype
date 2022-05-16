@@ -42,13 +42,13 @@
         <th>Name</th>
         <th>Email Address</th>
         <th>Phone Number</th>
-        <!-- <th>State</th>
+        <th>State</th>
         <th>County</th>
         <th>Zip Code</th>
         <th>Precinct</th>
         <th>Party</th>
         <th>Voter</th>
-        <th>Interest</th> -->
+        <th>Interest</th>
         <th>Send Email</th>
       </tr>
     </thead>
@@ -59,13 +59,13 @@
         <td>{{ user.first_name }} {{ user.last_name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
-        <!-- <td>{{ user.state }}</td>
+        <td>{{ user.state }}</td>
         <td>{{ user.county }}</td>
         <td>{{ user.zipcode }}</td>
         <td>{{ user.precinct }}</td>
         <td>{{ user.party }}</td>
         <td>{{ user.voter }}</td>
-        <td>{{ user.interest }}</td> -->
+        <td>{{ user.interest }}</td>
         <td>
           <form action="#" method="post">
             <button value={{user.id}} name="email_user" type="submit" class="btn btn-primary">Email</button>
@@ -76,7 +76,8 @@
     </tbody>
   </table>
 
-  <script src="/static/scripts/toast.js"></script>
 </body>
+
+<script src="/static/scripts/toast.js"></script>
 
 </html>

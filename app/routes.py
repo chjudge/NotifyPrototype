@@ -1,9 +1,9 @@
 import re
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from app.forms import RegisterForm
+from app.forms import RegisterForm, MessageForm
 from app.models import User
-from app.email import send_test_email
+from app.email import send_test_email, send_broadcast_email
 from app import db
 
 @app.get('/')
@@ -64,3 +64,25 @@ def post_admin():
             flash('User not found')
         return redirect(url_for('get_admin'))
     return redirect(url_for('get_admin'))
+
+@app.get('/message/')
+def get_message():
+    form = MessageForm()
+    return render_template('message.html', form=form)
+
+# send email to all users in the state, county, and precinct
+@app.post('/message/')
+def post_message():
+    form = MessageForm()
+    if form.validate():
+        users = User.query.filter_by(state=form.state.data, county=form.county.data, precinct=form.precinct.data).all()
+        for user in users:
+            send_test_email(user)
+        flash('Email sent to all users in ' + form.state.data + ', ' + form.county.data + ', ' + form.precinct.data)
+        return redirect(url_for('get_message'))
+    else:
+        exclude = r'[\'\[\]]'
+        for field, error in form.errors.items():
+            print(f"{field}: {str(error)}")
+            flash(f"{re.sub(exclude, '', str(error))}")
+        return redirect(url_for('get_message'))

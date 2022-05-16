@@ -10,3 +10,6 @@ def send_email(subject, sender, recipients, text_body, html_body):
 
 def send_test_email(user):
     send_email('Test',app.config['ADMINS'][0], recipients=[user.email], text_body=f'Test{user.first_name}', html_body=f'Test{user.last_name}')
+
+def send_broadcast_email(subject, sender, recipients, text_body, html_body):
+    send_email(subject, sender, recipients, text_body, html_body)
