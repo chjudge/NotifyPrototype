@@ -24,7 +24,7 @@ app.config['MAIL_USERNAME'] = 'wplibertynotification'
 app.config['MAIL_PASSWORD'] = 'pazzw0rd'
 app.config['MAIL_DEFAULT_SENDER'] = 'wplibertynotification@gmail.com'
 
-app.config['MAIL_SUPPRESS_SEND'] = True
+app.config['MAIL_SUPPRESS_SEND'] = False
 
 # for localhost mail server
 # app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
@@ -39,11 +39,13 @@ mail = Mail(app)
 
 db = SQLAlchemy(app)
 
-# check if users table exists
-if(not inspect(db.engine).has_table('users')):
-    db.create_all()
 
 from app import routes
 from app import email
 from app import forms
 from app import models
+
+# check if users table exists
+if(not inspect(db.engine).has_table('users')):
+    db.create_all()
+    print('table created')

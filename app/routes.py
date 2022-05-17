@@ -3,7 +3,7 @@ from app import app
 from flask import render_template, request, redirect, url_for, flash
 from app.forms import RegisterForm, MessageForm
 from app.models import User
-from app.email import send_test_email, send_broadcast_email
+from app.email import send_test_email, send_broadcast_email, send_verification_email
 from app import db
 
 
@@ -39,13 +39,29 @@ def post_register():
                     r_form.county.data, r_form.zip.data, r_form.precinct.data, r_form.party.data, 1 if r_form.voter.data == 'Yes' else 0, r_form.interest.data)
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('get_register'))
+        send_verification_email(user)
+        return redirect(url_for('verify_email'))
     else:
         exclude = r'[\'\[\]]'
         for field, error in r_form.errors.items():
             print(f"{field}: {str(error)}")
             flash(f"{re.sub(exclude, '', str(error))}")
         return redirect(url_for('get_register'))
+
+
+@app.get('/verify/')
+@app.get('/verify/<token>')
+def verify_email(token=None):
+    if token is None:
+        return render_template('verify.html')
+    user = User.verify_token(token)
+    if user is None:
+        flash('This link is invalid or has expired.')
+        return render_template('verify.html')
+    user.verified_email = 1
+    db.session.commit()
+    flash('You have verified your email address!')
+    return render_template('verify.html')
 
 
 @app.get('/admin/')
@@ -84,24 +100,28 @@ def post_message():
         state = form.state.data
         county = form.county.data
         precinct = form.precinct.data
+        validated = User.query.filter_by(verified_email=1)
         if(state == 'All'):
-            users = User.query.all()
+            users = validated.all()
         elif(county == 'All'):
-            users = User.query.filter_by(state=form.state.data).all()
+            users = validated.filter_by(state=form.state.data).all()
         elif(precinct == 'All'):
-            users = User.query.filter_by(
+            users = validated.filter_by(
                 state=form.state.data, county=form.county.data).all()
         else:
-            users = User.query.filter_by(
+            users = validated.filter_by(
                 state=form.state.data, county=form.county.data, precinct=form.precinct.data).all()
 
         print(users)
 
         emails = list(map(lambda u: u.email, users))
-        send_broadcast_email(
-            emails=emails, subject=form.subject.data, body=form.message.data)
-        flash('Email sent to all users in ' + form.state.data +
-              ', ' + form.county.data + ', ' + form.precinct.data)
+        if emails:
+            send_broadcast_email(
+                emails=emails, subject=form.subject.data, body=form.message.data)
+            flash('Email sent to all users in ' + form.state.data +
+                  ', ' + form.county.data + ', ' + form.precinct.data)
+        else:
+            flash('No users found')
         return redirect(url_for('get_message'))
     else:
         exclude = r'[\'\[\]]'

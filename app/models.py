@@ -1,4 +1,7 @@
-from app import db
+from time import time
+from app import db, app
+import jwt
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -13,6 +16,7 @@ class User(db.Model):
     precinct = db.Column(db.String(40), unique=False)
     party = db.Column(db.String(40), unique=False)
     voter = db.Column(db.Boolean, unique=False)
+    verified_email = db.Column(db.Boolean, default=False)
     interest = db.Column(db.String(40), unique=False)
 
     def __init__(self, first_name, last_name, email, phone, state, county, zipcode, precinct, party, voter, interest):
@@ -28,6 +32,17 @@ class User(db.Model):
         self.voter = voter
         self.interest = interest
 
-
     def __repr__(self):
         return '<User %r>' % self.email
+
+    def get_verification_token(self, expires_in=600):
+        return jwt.encode({'user_id': self.id, 'exp': time() + expires_in}, app.config['SECRET_KEY'], algorithm='HS256')
+
+
+    @staticmethod
+    def verify_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['user_id']
+        except:
+            return
+        return User.query.get(id)
