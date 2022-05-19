@@ -1,12 +1,6 @@
-window.addEventListener("DOMContentLoaded", function () {
-    // attach an event listener to the state dropdown
-    const state = document.getElementById("state");
-    state.addEventListener("change", setState);
-});
-
-
 async function setState(element) {
     const state = element.value;
+    console.log(`fetching state ${state}`);
     const counties = fetch(`/api/counties/${state}`, {
         method: 'GET',
         headers: {
@@ -21,16 +15,13 @@ async function setState(element) {
 
             counties = new Set(counties);
 
-            if (counties.length == 0) {
+            if (counties.size === 0) {
                 const pleaseSelect = document.createElement('option');
                 pleaseSelect.value = '';
                 pleaseSelect.innerText = 'Please select a state first';
+                countySelect.appendChild(pleaseSelect);
             }
             else {
-                const allOption = document.createElement('option');
-                allOption.value = 'all';
-                allOption.innerHTML = 'All';
-                countySelect.appendChild(allOption);
                 counties.forEach(county => {
                     const option = document.createElement('option');
                     option.value = county;

@@ -7,6 +7,19 @@ from app.email import send_test_email, send_broadcast_email, send_verification_e
 from app import db
 
 
+
+   
+# load data from text file into locations table
+# with open('app/static/data/al_counties.txt', 'r') as f:
+#     counties = f.read().splitlines()
+#     for county in counties:
+#         # add new entry to the counties table
+#         if len(county) > 0:
+#             db.session.add(Counties('Alabama', county))
+#     db.session.commit()
+#     print('data loaded')
+
+
 @app.get('/')
 def index():  # put application's code here
     return redirect(url_for('get_register'))
@@ -15,18 +28,8 @@ def index():  # put application's code here
 @app.get('/register/')
 def get_register():
     r_form = RegisterForm()
-
     
-# load data from text file into locations table
-#     with open('app/static/data/pa_counties.txt', 'r') as f:
-#         pa_counties = f.read().splitlines()
-#         for county in pa_counties:
-#             # add new entry to the locations table
-#             db.session.add(Counties('Pennsylvania', county))
-#         db.session.commit()
-#         print('data loaded')
-    
-#     return render_template('register.html', form=r_form)
+    return render_template('register.html', form=r_form)
 
 
 @app.post('/register/')
@@ -144,6 +147,6 @@ def post_message():
 
 @app.get('/api/counties/<state>')
 def get_counties(state):
-    counties = Locations.query.filter_by(state=state).all()
+    counties = Counties.query.filter_by(state=state).all()
     counties = list(dict.fromkeys(counties))
     return {'counties': [c.county for c in counties]}
