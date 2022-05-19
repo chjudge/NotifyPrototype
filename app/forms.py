@@ -33,7 +33,7 @@ class RegisterForm(FlaskForm):
 class MessageForm(FlaskForm):
     with open('app/static/data/states.txt') as f:
         states = f.read().splitlines()
-        states = [state.strip() for state in states]
+        states = ['All'] + [state.strip() for state in states]
     state = SelectField('State:', choices=states, validators=[InputRequired()])
     county = SelectField('County:', choices=[
                          'All', 'County1', 'County2', 'County3', 'County4'], validators=[InputRequired()])
