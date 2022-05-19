@@ -1,26 +1,21 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import (SubmitField, EmailField, TelField, StringField,
                             SelectField, TextAreaField)
-from wtforms.validators import InputRequired, Email, EqualTo, Length
-
-STATES = ['All', 'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-          'HI', 'ID', 'IL', 'IN', 'IO', 'KS', 'KY', 'LA', 'ME', 'MD',
-          'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-          'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-          'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-
+from wtforms.validators import InputRequired, Email, Length
 
 class RegisterForm(FlaskForm):
+    with open('app/static/data/states.txt') as f:
+        states = f.read().splitlines()
+        states = [('All', 'All')] + [(state.strip(), state.strip()) for state in states]
     fname = StringField("First Name: ", validators=[InputRequired()])
     lname = StringField("Last Name: ", validators=[InputRequired()])
     email = EmailField("Email: ", validators=[
                        InputRequired(), Email('Email must be in valid format')])
     phone = TelField("Mobile Phone Number: ", validators=[
                      InputRequired(), Length(10)])
-    state = SelectField("State: ", choices=STATES,
+    state = SelectField("State: ", choices=states,
                         validators=[InputRequired()])
-    county = SelectField('County:', choices=[
-                         'County1', 'County2', 'County3', 'County4'], validators=[InputRequired()])
+    county = SelectField('County:', choices=['Please select a state'], validators=[InputRequired()], validate_choice=False)
     zip = StringField("Zip Code: ", validators=[InputRequired(), Length(5)])
     precinct = SelectField('Precinct:', choices=[
                            'Precinct1', 'Precinct2', 'Precinct3', 'Precinct4'], validators=[InputRequired()])
@@ -36,7 +31,10 @@ class RegisterForm(FlaskForm):
 
 
 class MessageForm(FlaskForm):
-    state = SelectField('State:', choices=STATES, validators=[InputRequired()])
+    with open('app/static/data/states.txt') as f:
+        states = f.read().splitlines()
+        states = [('All', 'All')] + [(state.strip(), state.strip()) for state in states]
+    state = SelectField('State:', choices=states, validators=[InputRequired()])
     county = SelectField('County:', choices=[
                          'All', 'County1', 'County2', 'County3', 'County4'], validators=[InputRequired()])
     precinct = SelectField('Precinct:', choices=[

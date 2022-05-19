@@ -46,3 +46,17 @@ class User(db.Model):
         except:
             return
         return User.query.get(id)
+
+
+class Counties(db.Model):
+    __tablename__ = 'counties'
+    id = db.Column(db.Integer, primary_key=True)
+    state = db.Column(db.String(40), unique=False)
+    county = db.Column(db.String(40), unique=False)
+
+    def __init__(self, state, county, precinct=None):
+        self.state = state
+        self.county = county
+
+    def __repr__(self):
+        return '<Location %r>' % self.county

@@ -45,7 +45,10 @@ from app import email
 from app import forms
 from app import models
 
+
 # check if users table exists
-if(not inspect(db.engine).has_table('users')):
-    db.create_all()
-    print('table created')
+# if(not inspect(db.engine).has_table('users') or not inspect(db.engine).has_table('locations')):
+#     db.drop_all()
+#     db.create_all()
+#     print('table created')
+

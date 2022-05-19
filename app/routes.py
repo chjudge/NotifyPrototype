@@ -2,7 +2,7 @@ import re
 from app import app
 from flask import render_template, request, redirect, url_for, flash
 from app.forms import RegisterForm, MessageForm
-from app.models import User
+from app.models import Counties, User
 from app.email import send_test_email, send_broadcast_email, send_verification_email
 from app import db
 
@@ -15,7 +15,18 @@ def index():  # put application's code here
 @app.get('/register/')
 def get_register():
     r_form = RegisterForm()
-    return render_template('register.html', form=r_form)
+
+    
+# load data from text file into locations table
+#     with open('app/static/data/pa_counties.txt', 'r') as f:
+#         pa_counties = f.read().splitlines()
+#         for county in pa_counties:
+#             # add new entry to the locations table
+#             db.session.add(Counties('Pennsylvania', county))
+#         db.session.commit()
+#         print('data loaded')
+    
+#     return render_template('register.html', form=r_form)
 
 
 @app.post('/register/')
@@ -129,3 +140,10 @@ def post_message():
             print(f"{field}: {str(error)}")
             flash(f"{re.sub(exclude, '', str(error))}")
         return redirect(url_for('get_message'))
+
+
+@app.get('/api/counties/<state>')
+def get_counties(state):
+    counties = Locations.query.filter_by(state=state).all()
+    counties = list(dict.fromkeys(counties))
+    return {'counties': [c.county for c in counties]}
