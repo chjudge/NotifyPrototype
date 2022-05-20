@@ -17,21 +17,22 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/f
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # for gmail mail server
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = 1
-app.config['MAIL_USERNAME'] = 'wplibertynotification'
-app.config['MAIL_PASSWORD'] = 'pazzw0rd'
-app.config['MAIL_DEFAULT_SENDER'] = 'wplibertynotification@gmail.com'
+# bad, use your own mail server
+# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+# app.config['MAIL_PORT'] = 587
+# app.config['MAIL_USE_TLS'] = 1
+# app.config['MAIL_USERNAME'] = 'wplibertynotification'
+# app.config['MAIL_PASSWORD'] = 'pazzw0rd'
+# app.config['MAIL_DEFAULT_SENDER'] = 'wplibertynotification@gmail.com'
 
 app.config['MAIL_SUPPRESS_SEND'] = False
 
 # for localhost mail server
-# app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
-# app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT') or 25)
-# app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS') is not None
-# app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-# app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT') or 25)
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS') is not None
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
 app.config['ADMINS'] = ['no-reply@site.com']
 
