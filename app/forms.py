@@ -36,7 +36,7 @@ class MessageForm(FlaskForm):
         states = ['All'] + [state.strip() for state in states]
     state = SelectField('State:', choices=states, validators=[InputRequired()])
     county = SelectField('County:', choices=[
-                         'All', 'County1', 'County2', 'County3', 'County4'], validators=[InputRequired()])
+                         'All'], validators=[InputRequired()])
     precinct = SelectField('Precinct:', choices=[
                            'All', 'Precinct1', 'Precinct2', 'Precinct3', 'Precinct4'], validators=[InputRequired()])
     subject = StringField('Subject:', validators=[InputRequired()])

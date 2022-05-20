@@ -16,10 +16,10 @@ async function setState(element) {
             counties = new Set(counties);
 
             if (counties.size === 0) {
-                const pleaseSelect = document.createElement('option');
-                pleaseSelect.value = '';
-                pleaseSelect.innerText = 'Please select a state first';
-                countySelect.appendChild(pleaseSelect);
+                const allSelect = document.createElement('option');
+                allSelect.value = '';
+                allSelect.innerText = 'All';
+                countySelect.appendChild(allSelect);
             }
             else {
                 counties.forEach(county => {
